@@ -1,0 +1,71 @@
+#XCamp - Coding@HSG
+#Project - Hangman
+#Summary: I wrote a program to play the Hangman game with my niece Anna during the Christmas holidays. Hangman is a word-guessing game. The program randomly selects a word and represents it with underscores, while the player tries to guess the letters one at a time. With each incorrect guess, a part of a figure is drawn, and the goal is to guess the word before the figure is complete. The player has a total of six guesses.
+
+import random #here the 'random' module is imported to make random choices
+from words import word_list #here the 'word_list' variable from the 'words' file is imported
+from visualisations import display_hangman #here the display_hangman function from the 'visualisations' file is imported
+
+def get_word(): #here we set a function called 'get_word()' and don't use any parameters.
+    word = random.choice(word_list) #here the variable word is set. Hence, the 'random.choice()' function is used to import a random element from the 'word_list' list
+    return word.upper() #here we use 'return' to end the function and return the randomly selected word. Hereby we use the 'uper()' method to change all characters of the selected string to uppercase
+
+def play(word): #here we set a function called 'play()' and use the parameter 'word'. The parameter is the randomly generated word from the 'word_list' list the player has to guess during the game
+    word_completion = "_" * len(word) #here we set the variable 'word_completion'. The 'len(word)' calculates the number of characters of the randomly generated word. By '"_" *' the underscore character is repeated once for every single character in the word. Hence, if the word is 'try' the 'word_completion' would be initialized as a string with three underscores
+    guessed = False #here a boolean variable is set and called 'guessed'. Further, the initial value is set to 'False'.
+    guessed_letters = [] #here an empty list is set and called 'guessed_letters'. This list is created to keep track of the letters that the player has guessed. It's initialized as an empty list to append as soon as the player made guesses
+    guessed_words = [] #here an empty list is set and called 'guessed_words'. This list is created to keep track of the words that the player has guessed. It's initialized as an empty list to append as soon as the player made guesses
+    tries = 6 #here the variable 'tries' is set at the integer '6'. This variable helps to keep track of the number of incorrect guesses the player is allowed before the game ends. The initial value is set at the maximum number of guesses. Since there are 7 stages and we start at 0 the maximum is 6
+    print("Hello Anna! HAPPY HOLIDAYS!") #here a string is printed to greet my niece Anna
+    print("Let's play Hangman!") #here a string is printed to tell Anna what we're doing
+    print(display_hangman(tries)) #here the visual representation is printed based on the number of guesses. The 'display_hangman' function is used and 'tries' as an argument to return a visual representation based on the number of incorrect guesses
+    print(word_completion) #here the current state of the word which is being guessed is printed. Hence, the variable 'word_completion' is used to display the current state of the word. Hereby correct guessed letters are shown as capital letters and the others as underscores
+    print("\n") #here the '\n' is used to add a blank line as a visual separation
+    while not guessed and tries > 0: #here a while loop is set and hence the code in the block will be executed as long as the condition is 'True'. The 'not guessed' is a boolean condition where the 'not' negates the value of 'guessed'. The loop exists as long as guessed is 'False'. The 'and' is used to set a second condition that has to be fulfilled as well. Hence the loop is only continued if the tries are > 0 and the player still has tries. Hereby the 'tries > 0' is a comparison condition which checks whether the tries are larger than 0.
+        guess = input("Please guess a letter or word: ").upper() #here the variable guess is set to read the user input. The 'input()' function is used to read the user input. The '.upper()' is a method to convert the characters of a string into capital letters. This is done to make sure the program is case-insensitive
+        if len(guess) == 1 and guess.isalpha(): #here a if condition is set that checks two conditions related to the user input stored in the 'guess' variable. The 'len(guess) == 1' checks whether the length of the input 'guess' is equal to 1 and hence a single character. Further, the 'guess.isalpha()' checks whether all characters in the input 'guess' are alphabetic and hence letters. The conditions are combined with the 'and'
+            if guess in guessed_letters: #here a if condition is set to check whether the users current guess has already been guessed before. The 'in' is used to check if the value 'guess' is in the list 'guessed_letters'
+                print("You've already guessed the letter", guess) #here we print that the letter has already been guessed with a string and the variable 'guess'. This doesn't count as a try
+            elif guess not in word: #here we set the 'else if' condition to check whether the guessed letter ('guess') is not in the word ('word'). If the condition is 'True' we make the respective changes to the game. This condition is checked if the preceding conditions are not met.
+                print(guess, "is not in the word.") #here a statement is printed to tell the player the guessed letter ('guess') is not in the word ('word')
+                tries -= 1 #here we write 'tries = tries - 1' in the form of tries -= 1 to decrement the variable 'tries' by one guess
+                guessed_letters.append(guess) #here we append the list of guessed letters ('guessed_letters') by adding the letter 'guess' to it
+            else: #here the else condition is set for the case in which the player guesses a correct letter. Further, the game is adjusted for this case
+                print("Good job,", guess, "is in the word!") #here we print a string to tell the player that the letter they guessed ('guess') was part of the target word ('word')
+                guessed_letters.append(guess) #here the list with the guessed letters ('guessed_letters') is appended by adding the 'guess' to the list
+                word_as_list = list(word_completion) #here we set a new variable called 'word_as_list' and convert the state of the word ('word_completion') into a list by using the 'list()' function
+                indices = [i for i, letter in enumerate(word) if letter == guess] #here we set a list called 'indices' with all indices where the character 'guess' appears in the string 'word'. Therefore, we use the 'enumerate()' function. This function returns pairs of indices and elements ('i, letter') from an iterable ('word'). The list comprehension iterates over each index and element pair returned by the 'enumerate(word)' function. The 'if letter == guess' checks whether the current character ('letter') is the character that the player guessed ('guess'). If the condition is true the index 'i' is added to the list
+                for index in indices: #here we set a loop that iterates over each index of the 'indices' list. We do this to update the 'word_as_list' by replacing the respective underscores with the guessed letter in the following line of code
+                    word_as_list[index] = guess #here we update the value at the specific index in the 'word_as_list' with the character 'guess'
+                word_completion = "".join(word_as_list) #here we update the 'word_completion' variable with the correct guesses to refelct the current state of the word. We use the 'join' method to concatenate the elements of the 'word_as_list' iterable into a string. The '"".' is used to make sure the characters are not seperated by a space.
+                if "_" not in word_completion: #here we set a condition to check if any underscores are left or not
+                    guessed = True #if no underscores ('not in') are in the 'word_completion' the player guessed all letters of the target word and 'guesses' can be set as 'True'. This will make us exit the loop
+        elif len(guess) == len(word) and guess.isalpha(): #here an 'else if' condition is set. The 'len(guess) == len(word)' checks whether the length of the guessed word ('guess') is equal to the length of the target word ('word'). The 'and' makes sure both conditions have to be 'True' for the 'elif' condition to be executed. The 'guess.isalpha()' checks if all characters in the guessed word ('guess') are alphabetic letters.
+            if guess in guessed_words: #here we use an if condition to check whether the player's guessed word ('guess' variable) is already in the list of guessed words('guessed_words')
+                print("You already guessed the word", guess) #here we tell the reader by printing a string that this guess has already been made. Though, this will only be executed if the above if condition is 'True'. Otherwise the below 'elif' or 'else' will be executed
+            elif guess != word: #here we check whether the player's guessed word ('guess') is not equal to the target word ('word'). Therefore, we set the condition 'guess != word' and check if the variable 'guess' is not equal to the variable 'word'. If 'True' the following three lines of code will be executed
+                print(guess, "is not the word.") #here we print a string telling the player that the 'guess' is not the word
+                tries -= 1 #here we decrement the variable 'tries' by 1 ('tries = tries - 1') because the player has a guess less due to the wrong guess ('guess')
+                guessed_words.append(guess) #here we append (.append()') the list with the guessed words ('guessed_words') by adding the guessed word ('guess') to it
+            else: #here we set the 'else' condition for the case in which the player guesses the hole word correctly. This condition will be executed if the above two are not met
+                guessed = True #here a boolean variable 'guessed' is set to 'True' to indicate that the player has successfully guessed the word
+                word_completion = word #here hence the variable 'word_completion' is updated with the target word ('word')
+        else: #here we set an 'else' condition which is exeecuted if the above 'if' and 'elif' conditions are not met. In this game this is the case if the input is not an alphabetic string
+            print("Not a valid guess.") #here we print a string to tell the player his/het guess was not valid
+        print(display_hangman(tries)) #here we print the 'display_hangman()' function with the 'tries' as an argument. The function was imported from 'visualisations' and returns the visual representation of the hanging man based on the 'tries'
+        print(word_completion) #here the current state of the target word ('word') that's being guessed is printed. Correctly guessed letters are shown and the remaining letters are represented by underscores
+        print("\n") #here a blank line is printed ('\n') as a visual separation between different stages of the game
+    if guessed: #here we check the value of the boolean variable 'guessed'. If it's 'True' the player has successfully guessed the entire word and if it's 'False' the player as run out of tries
+        print("Congrats, you guessed the word! You win!") #here if the above if statement is 'True' we tell the player that he/she won the game
+    else: #here if the if condition is not met meaning if it is 'False' the else condition will be executed
+        print("Sorry, you ran out of tries. The word was " + word + ". Maybe next time!") #here we tell the player that he/she ran out of tries and what the word was
+
+def main(): #here we define the main function of the game ('def main()') and this is also where we start the execution
+    word = get_word() #here we run the 'get_word()' function to generate a random word from the 'word_list' list. The choosen word is stored in the variable 'word'
+    play(word) #here we run the 'play()' function with the randomly selected word ('word') as an argument. This starts the hangman game with the choosen word ('word')
+    while input("Play again? (Y/N) ").upper() == "Y": #here a 'while loop' is set to restart the game or end it. The loop continues as long as the input is "Y" or "y" and exits and ends the program otherwise. The 'input("Play again ? (Y/N) ")' asks the user whether he/she wants to play again and the given input of the user is than converted into uppercase characters by the '.upper()' method
+        word = get_word() #here a random word from the 'word_list' list is again obtained by running the function 'get_word()'
+        play(word) #here the 'play()' function is run with the randomly selected word ('word') as an argument. This restarts the hangman game with the choosen word ('word')
+
+if __name__ == "__main__": #here we use a function to determine that this file is run as the main program and that it's not imported into another script. The '__name__ == __main__' is set to define the script as the top-level script being run. Further, a 'if' condition is used to check whether the script is run as the main program. If the script is the main program the code block inside the 'if' statement is executed
+    main() #here we run the 'main()' function to start the game. This is done if the script is the main program and not imported.
