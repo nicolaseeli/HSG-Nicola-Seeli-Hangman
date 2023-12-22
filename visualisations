@@ -1,0 +1,68 @@
+def display_hangman(tries): #here a function ('display_hangman') is set with the parameter 'tries'. The parameter 'tries' represents the number of incorrect guesses made by the player
+    stages = [ #here a list is set with all stages of the hangman game
+        """
+            +---+
+                |
+                |
+                |
+                |
+                |
+            ====
+        """,
+        """
+            +---+
+            O   |
+                |
+                |
+                |
+                |
+            ====
+        """,
+        """
+            +---+
+            O   |
+            |   |
+                |
+                |
+                |
+            ====
+        """,
+        """
+            +---+
+            O   |
+           /|   |
+                |
+                |
+                |
+            ====
+        """,
+        """
+            +---+
+            O   |
+           /|\\  |
+                |
+                |
+                |
+            ====
+        """,
+        """
+            +---+
+            O   |
+           /|\\  |
+           /    |
+                |
+                |
+            ====
+        """,
+        """
+            +---+
+            O   |
+           /|\\  |
+           / \\  |
+                |
+                |
+            ====
+        """
+    ]
+    return stages[6 - tries] #here the function returns an element from the 'stages' list based on the number of incorrect guesses ('tries'). The '6 - tries' is used to go through the visualizations from the first to the last
+#here we use the '\\' to represent a single backlash because python can't read a single backlash as a string
